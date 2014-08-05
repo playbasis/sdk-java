@@ -9,7 +9,7 @@ package com.playbasis.pblib;
  * timestamp : time of the request in Long format
  * time : time of the request in format like "Wed, 19 Mar 2014 11:11:39 +0700 Asia\/Bangkok"
  * 
- * @author Sylvain Dormieu
+ * @author Playbasis Team
  *
  */
 public class Request {

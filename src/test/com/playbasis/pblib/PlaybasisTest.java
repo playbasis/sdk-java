@@ -11,12 +11,12 @@ import org.junit.Test;
 
 /**
  * The PlaybasisTest Object
- * @author thanakij
+ * @author Playbasis Team
  */
 public class PlaybasisTest {
 
-    public static final String authKey = "abc";
-    public static final String authSecret = "abcde";
+    public static final String authKey = "KEY";
+    public static final String authSecret = "SECRET";
     public static final String cl_player_id1 = "1";
     public static final String cl_player_id1_exp = "123";
     public static final String cl_player_id1_level = "11";

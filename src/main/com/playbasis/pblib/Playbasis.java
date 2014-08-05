@@ -25,9 +25,11 @@ import javax.net.ssl.X509TrustManager;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import com.playbasis.pblib.Request;
+
 /**
  * The Playbasis Object
- * @author Sylvain Dormieu
+ * @author Playbasis Team
  */
 public class Playbasis
 {
@@ -187,44 +189,6 @@ public class Playbasis
 	}
 	
 	/**
-	 * Update data on a player. Fields include
-	 * image
-	 * email
-	 * username
-	 * exp
-	 * level
-	 * first_name
-	 * last_name
-	 * gender
-	 * birth_date
-	 * registered
-	 * last_login
-	 * last_logout
-	 * cl_player_id
-	 * @param playerId
-	 * @param updateData
-	 * @return
-	 */
-	public Request update(String playerId, String... updateData)
-	{
-		StringBuilder param = new StringBuilder();
-		param.append("token=");
-		param.append(token);
-		for(int i=0; i<updateData.length; ++i)
-			param.append("&"+updateData[i]);
-		return getPlaybasisAnswer("Player/"+playerId+"/update", param.toString());
-	}
-	/**
-	 * Delete a player
-	 * @param playerId
-	 * @return
-	 */
-	public Request delete(String playerId)
-	{
-		return getPlaybasisAnswer("Player/"+playerId+"/delete", "token="+token);
-	}
-	
-	/**
 	 * Register a new player
 	 * @param playerId
 	 * @param username
@@ -266,6 +230,45 @@ public class Playbasis
 		}
 		return getPlaybasisAnswer("Player/"+playerId+"/register", param.toString());
 	}
+
+    /**
+     * Update data on a player. Fields include
+     * image
+     * email
+     * username
+     * exp
+     * level
+     * first_name
+     * last_name
+     * gender
+     * birth_date
+     * registered
+     * last_login
+     * last_logout
+     * cl_player_id
+     * @param playerId
+     * @param updateData
+     * @return
+     */
+    public Request update(String playerId, String... updateData)
+    {
+        StringBuilder param = new StringBuilder();
+        param.append("token=");
+        param.append(token);
+        for(int i=0; i<updateData.length; ++i)
+            param.append("&"+updateData[i]);
+        return getPlaybasisAnswer("Player/"+playerId+"/update", param.toString());
+    }
+    /**
+     * Delete a player
+     * @param playerId
+     * @return
+     */
+    public Request delete(String playerId)
+    {
+        return getPlaybasisAnswer("Player/"+playerId+"/delete", "token="+token);
+    }
+
 	/**
 	 * Call login action on server
 	 * @param playerId
@@ -303,6 +306,22 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/point/"+pointName+apiKeyParam, null);
 	}
+    /**
+     * Returns reward a player currently have.
+     * @param playerId
+     * @param pointName
+     * @param offset
+     * @param limit
+     * @return
+     */
+    public Request pointHistory(String playerId, String pointName, int offset, int limit)
+    {
+        String stringQuery = "&offset="+offset+"&limit"+limit;
+        if(!pointName.isEmpty() && pointName != null){
+            stringQuery = stringQuery+"&point_name="+pointName;
+        }
+        return getPlaybasisAnswer("Player/"+playerId+"/point/"+pointName+apiKeyParam+stringQuery, null);
+    }
 	/**
 	 * Returns the time and action that a player last performed.
 	 * @param playerId
@@ -332,32 +351,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/action/"+actionName+"/count"+apiKeyParam, null);
 	}
-	/**
-	 * Returns information about all the goods list that a player has redeem.
-	 * @param playerId player id as used in client's website
-	 * @return
-	 */
-	public Request playerGoods(String playerId)
-	{
-		return getPlaybasisAnswer("Player/"+playerId+"/goods"+apiKeyParam, null);
-	}
-	/**
-	 * Returns information about the goods with the specified id.
-	 * @param goodId
-	 * @return
-	 */
-	public Request goodInfo(String goodId)
-	{
-		return getPlaybasisAnswer("Goods/"+goodId+apiKeyParam, null);
-	}
-	/**
-	 * Returns information about all available goods for the current site.
-	 * @return
-	 */
-	public Request goodsList()
-	{
-		return getPlaybasisAnswer("Goods/"+apiKeyParam, null);
-	}
+	
 	/**
 	 * Returns information about all the badges that a player has earned.
 	 * @param playerId
@@ -368,20 +362,6 @@ public class Playbasis
 		return getPlaybasisAnswer("Player/"+playerId+"/badge"+apiKeyParam, null);
 	}
 	
-	public Request claimBadge(String playerId, String badgeId){
-		StringBuilder param = new StringBuilder();
-		param.append("token=");
-		param.append(token);
-		
-		return getPlaybasisAnswer("Player/"+playerId+"/badge/"+badgeId+"/claim"+apiKeyParam, param.toString());	
-	}
-	public Request redeemBadge(String playerId, String badgeId){
-		StringBuilder param = new StringBuilder();
-		param.append("token=");
-		param.append(token);
-		
-		return getPlaybasisAnswer("Player/"+playerId+"/badge/"+badgeId+"/redeem"+apiKeyParam, param.toString());	
-	}
 	/**
 	 * Returns list of top players according to specified point type.
 	 * @param rankedBy
@@ -392,7 +372,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/rank/"+rankedBy+"/"+String.valueOf(limit)+apiKeyParam, null);
 	}
-        /**
+     /**
 	 * Returns list of top players.
 	 * @param limit
 	 * @return
@@ -401,7 +381,8 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/ranks/"+String.valueOf(limit)+apiKeyParam, null);
 	}
-        /**
+	
+	/**
 	 * Returns information about specified level.
 	 * @param lv
 	 * @return
@@ -418,6 +399,42 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/levels/"+apiKeyParam, null);
 	}
+	
+	public Request claimBadge(String playerId, String badgeId){
+		StringBuilder param = new StringBuilder();
+		param.append("token=");
+		param.append(token);
+		
+		return getPlaybasisAnswer("Player/"+playerId+"/badge/"+badgeId+"/claim"+apiKeyParam, param.toString());	
+	}
+	public Request redeemBadge(String playerId, String badgeId){
+		StringBuilder param = new StringBuilder();
+		param.append("token=");
+		param.append(token);
+		
+		return getPlaybasisAnswer("Player/"+playerId+"/badge/"+badgeId+"/redeem"+apiKeyParam, param.toString());	
+	}
+	
+	/**
+	 * Returns information about all the goods list that a player has redeem.
+	 * @param playerId player id as used in client's website
+	 * @return
+	 */
+	public Request playerGoods(String playerId)
+	{
+		return getPlaybasisAnswer("Player/"+playerId+"/goods"+apiKeyParam, null);
+	}
+	
+	public Request questOfPlayer(String playerId, String questId)
+	{
+		return getPlaybasisAnswer("Player/quest/"+questId+apiKeyParam+"&player_id="+playerId, null);
+	}
+	
+	public Request questListOfPlayer(String playerId)
+	{
+		return getPlaybasisAnswer("Player/quest"+apiKeyParam+"&player_id="+playerId, null);
+	}
+	
 	/**
 	 * Returns information about all available badges for the current site.
 	 * @return
@@ -435,6 +452,25 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Badge/"+badgeId+apiKeyParam, null);
 	}
+	
+	/**
+	 * Returns information about the goods with the specified id.
+	 * @param goodId
+	 * @return
+	 */
+	public Request goodInfo(String goodId)
+	{
+		return getPlaybasisAnswer("Goods/"+goodId+apiKeyParam, null);
+	}
+	/**
+	 * Returns information about all available goods for the current site.
+	 * @return
+	 */
+	public Request goodsList()
+	{
+		return getPlaybasisAnswer("Goods/"+apiKeyParam, null);
+	}
+	
 	/**
 	 * Returns names of actions that can trigger game rules within a client’s website.
 	 * @return
@@ -486,7 +522,127 @@ public class Playbasis
 		return getPlaybasisAnswer("Engine/rule", param.toString());	
 	}
 	
+	/**
+	 * Returns information about the quest with the specified id.
+	 * @param questId
+	 * @return
+	 */
+	public Request quest(String questId)
+	{
+		return getPlaybasisAnswer("Quest/"+questId+apiKeyParam, null);
+	}
+	/**
+	 * Returns information about all quest for the current site.
+	 * @return
+	 */
+	public Request quests()
+	{
+		return getPlaybasisAnswer("Quest"+apiKeyParam, null);
+	}
+	/**
+	 * Returns information about mission with the specified id.
+	 * @param questId
+	 * @param missionId
+	 * @return
+	 */
+	public Request mission(String questId, String missionId)
+	{
+		return getPlaybasisAnswer("Quest/"+questId+"/mission/"+missionId+apiKeyParam, null);
+	}
 	
+	/**
+	 * Returns information about all available quest for the player.
+	 * @param playerId
+	 * @return
+	 */
+	public Request questsAvailable(String playerId)
+	{
+		return getPlaybasisAnswer("Quest/available"+apiKeyParam+"&player_id="+playerId, null);
+	}
+	
+	/**
+	 * check the quest is available/unavailable for player.
+	 * @param questId
+	 * @param playerId
+	 * @return
+	 */
+	public Request questAvailable(String questId, String playerId)
+	{
+		return getPlaybasisAnswer("Quest/"+questId+"/available"+apiKeyParam+"&player_id="+playerId, null);
+	}
+	
+	public Request joinQuest(String questId, String playerId)
+	{	
+		StringBuilder param = new StringBuilder();
+		try
+		{
+			param.append("token=");
+			param.append(token);
+			param.append("&player_id=");
+			param.append(URLEncoder.encode(playerId, "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			return null;
+		}
+		
+		return getPlaybasisAnswer("Quest/"+questId+"/join", param.toString());
+	}
+	
+	public Request cancelQuest(String questId, String playerId)
+	{	
+		StringBuilder param = new StringBuilder();
+		try
+		{
+			param.append("token=");
+			param.append(token);
+			param.append("&player_id=");
+			param.append(URLEncoder.encode(playerId, "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			return null;
+		}
+		
+		return getPlaybasisAnswer("Quest/"+questId+"/cancel", param.toString());
+	}
+	
+	public Request redeemGoods(String goodsId, String playerId, int amount)
+	{	
+		StringBuilder param = new StringBuilder();
+		try
+		{
+			param.append("token=");
+			param.append(token);
+			param.append("&quest_id=");
+			param.append(URLEncoder.encode(playerId, "UTF-8"));
+			param.append("&player_id=");
+			param.append(URLEncoder.encode(playerId, "UTF-8"));
+			param.append("&amount=");
+			param.append(URLEncoder.encode(playerId, "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			return null;
+		}
+		
+		return getPlaybasisAnswer("Redeem/goods", param.toString());
+	}
+	
+	public Request recentPoint(int offset, int limit)
+	{
+		String stringQuery = "&offset="+offset+"&limit"+limit;
+		return getPlaybasisAnswer("Service/recent_point"+apiKeyParam+stringQuery, null);
+	}
+
+	public Request recentPointByName(String pointName, int offset, int limit)
+	{
+		String stringQuery = "&offset="+offset+"&limit"+limit;
+        if(!pointName.isEmpty() && pointName != null){
+            stringQuery = stringQuery+"&point_name="+pointName;
+        }
+		return getPlaybasisAnswer("Service/recent_point"+apiKeyParam+stringQuery, null);
+	}
 	
 	public static String call(String method, String data)
 	{
@@ -645,44 +801,5 @@ public class Playbasis
 	public void setDateExpire(String dateExpire) {
 		this.dateExpire = dateExpire;
 	}
-	
-	//Unit test
-	public static void main(String[] args) {
-		Playbasis pb = new Playbasis();
-		
-		boolean result = pb.auth("abc", "abcde");
-		System.out.println("testPlaybasis: Auth return is"+result);
-		if(result){
-			Request request = null;
-//			Request request = pb.login("javaApiUser4");
-//			request = pb.login("javaApiUser4");
-			//Request request = pb.register("javaApiUser4","javaApiUser4","testUserjava4@test.com","http://lakorndara.files.wordpress.com/2011/04/167148_187576261263101_116354608385267_546322_3889345_n1.jpg");
-			//Request request = pb.playerList("1610533872facebook,1003047582facebook,100002511981270facebook");
-			//Request request = pb.rank("point",10);
-			//Request request = pb.playerGoods("1610533872facebook");
-			//Request request = pb.goodsList();
-			
-			//Request request = pb.badges();
-			//request = pb.claimBadge("javaApiUser4", "52ea1ea78d8c89401c00004f");
-			//request = pb.redeemBadge("javaApiUser4", "52ea1ea78d8c89401c00004f");
-			request = pb.badgeOwned("javaApiUser4");
-//			for(int i=0;i<10;i++){
-//				pb.login("javaApiUser4");
-//				pb.logout("javaApiUser4");
-//				request = pb.rule("javaApiUser4","login");
-//				//request = pb.rule("javaApiUser4","logout");
-//			}
-//			request = pb.badgeOwned("javaApiUser4");
-//			request = pb.rule("javaApiUser4","point");
-			//Request request = pb.badgeOwned("javaApiUser4");
-			if(request == null) return;
-			if(request != null && request.isSuccess()){
-				Object item = request.getResponse();
-				System.out.println("test Playbasis DEBUG : player is "+ item);
-			}
-			else{
-				System.out.println("test Playbasis DEBUG : request failed with message "+ request.getMessage());
-			}
-		}
-	}
+
 }
