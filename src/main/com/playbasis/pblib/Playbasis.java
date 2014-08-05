@@ -278,6 +278,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/login", "token="+token);
 	}
+
 	/**
 	 * Call logout action on server
 	 * @param playerId
@@ -287,6 +288,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/logout", "token="+token);
 	}
+
 	/**
 	 * Returns information about all point-based rewards that a player currently have.
 	 * @param playerId
@@ -296,6 +298,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/points"+apiKeyParam, null);
 	}
+
 	/**
 	 * Returns how much of specified the point-based reward a player currently have.
 	 * @param playerId
@@ -306,6 +309,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/point/"+pointName+apiKeyParam, null);
 	}
+
     /**
      * Returns reward a player currently have.
      * @param playerId
@@ -322,6 +326,7 @@ public class Playbasis
         }
         return getPlaybasisAnswer("Player/"+playerId+"/point/"+pointName+apiKeyParam+stringQuery, null);
     }
+
 	/**
 	 * Returns the time and action that a player last performed.
 	 * @param playerId
@@ -331,6 +336,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/action/time"+apiKeyParam, null);
 	}
+
 	/**
 	 * Returns the last time that player performed the specified action.
 	 * @param playerId
@@ -341,6 +347,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/"+playerId+"/action/"+actionName+"/time"+apiKeyParam, null);
 	}
+
 	/**
 	 * Returns the number of times that a player has performed the specified action.
 	 * @param playerId
@@ -372,6 +379,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Player/rank/"+rankedBy+"/"+String.valueOf(limit)+apiKeyParam, null);
 	}
+
      /**
 	 * Returns list of top players.
 	 * @param limit
@@ -531,6 +539,7 @@ public class Playbasis
 	{
 		return getPlaybasisAnswer("Quest/"+questId+apiKeyParam, null);
 	}
+
 	/**
 	 * Returns information about all quest for the current site.
 	 * @return
